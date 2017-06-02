@@ -23,6 +23,7 @@ function startGame() {
     chatClient = new ChatClient(socket);
     SetupSocket(socket);    
     animloop();
+    game.SetupInputs(c);
 }
 
 // check if nick is valid alphanumeric characters (and underscores)
