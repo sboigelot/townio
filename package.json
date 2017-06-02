@@ -1,0 +1,17 @@
+{
+  "name": "townio",
+  "version": "1.0.0",
+  "description": "A city builder game io style",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "author": "Simon 'Togis' Boigelot",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "requirejs": "^2.3.3",
+    "socket.io": "^2.0.2"
+  }
+}
