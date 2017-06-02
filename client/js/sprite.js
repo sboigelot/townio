@@ -14,7 +14,15 @@ function sprite (options) {
     that.loop = options.loop;
     that.posx = options.posx || 0,
     that.posy = options.posy || 0;
+    that.zIndex = options.zIndex || 0;
     that.autoClear = options.autoClear;
+    that.scaleRatio = 1;
+    
+    that.hotChangeSrc = function(src)
+    {
+        that.image = new Image();
+        that.image.src = src;        
+    };
     
     that.render = function () {
 	
@@ -28,11 +36,11 @@ function sprite (options) {
            that.image,
            that.frameIndex * that.width / that.numberOfFrames,
            0,
-           that.width / that.numberOfFrames,
+           that.getFrameWidth(),
            that.height,
            that.posx,
            that.posy,
-           that.width / that.numberOfFrames,
+           that.getFrameWidth(),
            that.height);
         
     };
@@ -54,6 +62,10 @@ function sprite (options) {
             }
         }
     }; 
+    
+    that.getFrameWidth = function () {
+        return that.width / that.numberOfFrames;
+    };
     
     return that;
 }
