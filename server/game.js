@@ -2,15 +2,11 @@ module.exports = exports = Game;
 
 const syncList = require('./synclist');
 
-function Game(listType){ 
+function Game(){ 
     var that = {};
     
     that.syncListTest = syncList('test');
     that.syncListPlayers = syncList('player');
-    that.syncListPlayers.onAdd.push(function(player){
-        that.log("Adding player to sync list");
-        player.test = 'test';
-    });
     that.syncListBuildings = syncList('buildings');
     
     that.enableLog = true;
@@ -19,9 +15,9 @@ function Game(listType){
         if(!that.enableLog)
             return;
         if(data)
-            console.log('[SyncList<'+that.listType+'>] '+ content, data);
+            console.log('[Game] '+ content, data);
         else
-            console.log('[SyncList<'+that.listType+'>] '+ content);        
+            console.log('[Game] '+ content);        
     }
           
     that.handleNetwork = function(io, socket) 

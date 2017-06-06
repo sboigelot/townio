@@ -9,7 +9,7 @@ const game = require('./game')();
 app.use(express.static(__dirname + '/../client'));
 
 io.on('connection', function (socket) {
-    console.log("Somebody connected! "+socket.id);
+    console.log("[Server] Somebody connected! "+socket.id);
   
     chatServer.handleNetwork(socket);
     game.handleNetwork(io, socket);
@@ -17,5 +17,5 @@ io.on('connection', function (socket) {
 
 var serverPort = process.env.PORT || config.port;
 http.listen(serverPort, function() {
-  console.log("Server is listening on port " + serverPort);
+  console.log("[Server] listening on port " + serverPort);
 });
