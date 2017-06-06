@@ -4,15 +4,15 @@ const http    = require('http').Server(app);
 const io      = require('socket.io')(http);
 const chatServer = require('./chat-server')();
 const config  = require('./config.json');
-const syncListTest = require('./synclist')('test');
+const game = require('./game')();
 
 app.use(express.static(__dirname + '/../client'));
 
 io.on('connection', function (socket) {
-  console.log("Somebody connected! "+socket.id);
-  console.log("chatServer: "+chatServer);
-  chatServer.handleNetwork(socket);
-  syncListTest.handleNetwork(io, socket);
+    console.log("Somebody connected! "+socket.id);
+  
+    chatServer.handleNetwork(socket);
+    game.handleNetwork(io, socket);
 });
 
 var serverPort = process.env.PORT || config.port;

@@ -3,6 +3,17 @@ module.exports = exports = SyncList;
 function SyncList(listType){ 
     var that = {};
     
+    that.enableLog = false;
+    that.log = function(content, data)
+    {
+        if(!that.enableLog)
+            return;
+        if(data)
+            console.log('[SyncList<'+that.listType+'>] '+ content, data);
+        else
+            console.log('[SyncList<'+that.listType+'>] '+ content);        
+    }
+    
     that.listType = listType;
     
     that.items = [];
@@ -15,22 +26,22 @@ function SyncList(listType){
         socket.on('synclist_'+that.listType+'_playerAdd', function(data) {
             var sender = data.sender;
             var item = data.item;
-            
-            console.log('[SyncList<'+that.listType+'>] received synclist_'+that.listType+'_playerAdd', data);
+
+            that.log('received synclist_'+that.listType+'_playerAdd', data);
             that.push(item);
         });
-        
+
         socket.on('synclist_'+that.listType+'_playerRemove', function(data) {
             var sender = data.sender;
             var item = data.item;
-            
-            console.log('[SyncList<'+that.listType+'>] received synclist_'+that.listType+'_playerRemove', data);
+
+            that.log('received synclist_'+that.listType+'_playerRemove', data);
             that.remove(item);
         });
         
         socket.on('synclist_'+that.listType+'_playerRequestAll', function(data) {
-            console.log('[SyncList<'+that.listType+'>] received synclist_'+that.listType+'_playerRequestAll');
-        console.log('[SyncList<'+that.listType+'>] sending synclist_'+that.listType+'_serverSendAll',  that.items);
+            that.log('received synclist_'+that.listType+'_playerRequestAll');
+            that.log('sending synclist_'+that.listType+'_serverSendAll',  that.items);
             socket.emit('synclist_'+that.listType+'_serverSendAll', that.items);  
         });
     };
@@ -39,7 +50,7 @@ function SyncList(listType){
     {
         that.items.push(item);
         var data = {sender: 'server', item: item};
-        console.log('[SyncList<'+that.listType+'>] sending synclist_'+that.listType+'_serverAdd', data);
+        that.log('sending synclist_'+that.listType+'_serverAdd', data);
         that.io.emit('synclist_'+that.listType+'_serverAdd', data);     
     };
     
@@ -62,7 +73,7 @@ function SyncList(listType){
             //console.log('remove end');
         }
         var data = {sender: 'server', item: item};
-        console.log('[SyncList<'+that.listType+'>] sending synclist_'+that.listType+'_serverRemove', data);
+        that.log('sending synclist_'+that.listType+'_serverRemove', data);
         that.io.emit('synclist_'+that.listType+'_serverRemove', data);     
     }
     

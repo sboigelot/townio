@@ -71,6 +71,7 @@ window.onload = function() {
 
 function SetupSocket(socket) {
   chatClient.handleNetwork(socket);
+    game.playerName = playerName;
   game.handleNetwork(socket);
       
   // socket.on('connect',function(){

@@ -3,7 +3,10 @@ function Game()
     var that = {};
     
     that.spriteRenderer = new spriteRenderer();   
+    that.playerName;
     that.syncListTest = new SyncListClient('test');
+    that.syncListPlayers = new SyncListClient('player');
+    that.syncListBuildings = new SyncListClient('buildings');
     
     that.syncListTest.onAdd.push(function(item){
         that.spriteRenderer.addSprite(sprite({
@@ -19,6 +22,8 @@ function Game()
             posy: item.location.y
         }));
     });
+    
+    that.cameraCenter = {x:0, y:0};
     
     that.syncListTest.onRemove.push(function(item){
     
@@ -64,8 +69,8 @@ function Game()
 			tapY = e.targetTouches ? e.targetTouches[0].pageY : e.pageY,
 			canvasScaleRatio = that.canvasElement.width / that.canvasElement.offsetWidth;
 
-		loc.x = (tapX - pos.x) * canvasScaleRatio;
-		loc.y = (tapY - pos.y) * canvasScaleRatio;
+		loc.x = (tapX - pos.x) * canvasScaleRatio - that.cameraCenter.x;
+		loc.y = (tapY - pos.y) * canvasScaleRatio - that.cameraCenter.y;
      
         return loc;        
     };
@@ -120,13 +125,40 @@ function Game()
         canvasElement.addEventListener("touchstart", that.tap);
         canvasElement.addEventListener("mousedown", that.tap);
         canvasElement.addEventListener("mousemove", that.mousemove);
+        
+        canvasElement.addEventListener('keypress', function (e) 
+        {
+            var key = e.which || e.keyCode;
+
+            var KEY_LEFT = 113;
+            var KEY_RIGTH = 100;
+            var KEY_UP = 122;
+            var KEY_DOWN = 115;
+            var speed = 5;
+            
+            if (key === KEY_LEFT) 
+                that.cameraCenter.x -= speed;
+            if (key === KEY_RIGTH) 
+                that.cameraCenter.x += speed;
+            if (key === KEY_UP) 
+                that.cameraCenter.y += speed;
+            if (key === KEY_DOWN) 
+                that.cameraCenter.y -= speed;            
+        });
     };
     
     that.handleNetwork = function(socket) {
       console.log('Game connection process here');
       console.log(socket);
       that.syncListTest.handleNetwork(socket);
-      // This is where you receive all socket messages
+      that.syncListPlayers.handleNetwork(socket);
+      that.syncListBuildings.handleNetwork(socket);
+        
+        that.player = {
+            Name: playerName,
+            Score: 0
+        };
+        that.syncListPlayers.push(that.player);        
     };
 
     that.handleLogic = function() {
@@ -140,8 +172,17 @@ function Game()
       gfx.fillStyle = '#fbfcfc';
       gfx.fillRect(0, 0, screenWidth, screenHeight);
 
-      that.spriteRenderer.render();
-
+      that.spriteRenderer.render(that.cameraCenter);
+    
+      that.syncListPlayers.items.forEach(function(player, i){
+          gfx.font = 'bold 16px Verdana';
+          gfx.textAlign = 'Left';
+          gfx.lineWidth = 2;
+          gfx.fillStyle = '#0045ff';
+          gfx.fillText(player.Name + ': '+ player.Score, screenWidth - 150, (i+1) * 20);
+          //gfx.strokeStyle = '#27ae60';
+          //gfx.strokeText(player.Name + ': '+ player.Score, screenWidth / 2, i * 20)
+      });
     /*  gfx.fillStyle = '#2ecc71';
       gfx.strokeStyle = '#27ae60';
       gfx.font = 'bold 50px Verdana';

@@ -64,10 +64,10 @@ function spriteRenderer()
         });
     };
     
-    that.render = function()
+    that.render = function(offset)
     {        
         that.sprites.forEach(function(sprite){
-            sprite.render();
+            sprite.render(offset);
         });
     };
     

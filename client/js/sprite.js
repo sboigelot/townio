@@ -24,7 +24,7 @@ function sprite (options) {
         that.image.src = src;        
     };
     
-    that.render = function () {
+    that.render = function (offset) {
 	
         if(that.autoClear) {
             // Clear the canvas
@@ -38,8 +38,8 @@ function sprite (options) {
            0,
            that.getFrameWidth(),
            that.height,
-           that.posx,
-           that.posy,
+           that.posx + offset.x,
+           that.posy + offset.y,
            that.getFrameWidth(),
            that.height);
         
