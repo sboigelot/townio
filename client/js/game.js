@@ -3,7 +3,43 @@ function Game()
     var that = {};
     
     that.spriteRenderer = new spriteRenderer();   
-
+    that.syncListTest = new SyncListClient('test');
+    
+    that.syncListTest.onAdd.push(function(item){
+        that.spriteRenderer.addSprite(sprite({
+            context: canvas,
+            width: 1000,
+            height: 100,
+            src: "images/coin-sprite-animation.png",
+            numberOfFrames: 10,
+            ticksPerFrame: 4,
+            loop: true,
+            autoClear: false,
+            posx: item.location.x,
+            posy: item.location.y
+        }));
+    });
+    
+    that.syncListTest.onRemove.push(function(item){
+    
+        var spriteToRemove;
+        
+        that.spriteRenderer.sprites.forEach(function(sprite)
+        {
+            if(sprite.posx == item.location.x &&
+              sprite.posy == item.location.y)
+                {
+                    spriteToRemove = sprite;
+                }
+        });
+                  
+        if(spriteToRemove)
+        {
+            that.spriteRenderer.removeSprite(spriteToRemove);
+        }
+                                    
+    });
+    
     that.getElementPosition = function (element) {
 	
        var parentOffset,
@@ -40,23 +76,13 @@ function Game()
         
         if(that.lastSpriteOver)
         {
-            that.spriteRenderer.removeSprite(that.lastSpriteOver);
+            that.syncListTest.remove({type: 'coin', location : {x: that.lastSpriteOver.posx, y:that.lastSpriteOver.posy}});
+            //that.spriteRenderer.removeSprite(that.lastSpriteOver);
             that.lastSpriteOver = null;
         }
         else
         {
-            that.spriteRenderer.addSprite(sprite({
-                context: canvas,
-                width: 1000,
-                height: 100,
-                src: "images/coin-sprite-animation.png",
-                numberOfFrames: 10,
-                ticksPerFrame: 4,
-                loop: true,
-                autoClear: false,
-                posx: loc.x,
-                posy: loc.y
-            }));
+            that.syncListTest.push({type: 'coin', location : loc});
         }
     };
     
@@ -99,6 +125,7 @@ function Game()
     that.handleNetwork = function(socket) {
       console.log('Game connection process here');
       console.log(socket);
+      that.syncListTest.handleNetwork(socket);
       // This is where you receive all socket messages
     };
 

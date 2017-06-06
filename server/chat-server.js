@@ -1,9 +1,9 @@
 module.exports = exports = ChatServer;
 
 function ChatServer(){ 
-    var self = this;
+    var that = {};
     
-    this.handleNetwork = function(socket) {  
+    that.handleNetwork = function(socket) {  
       // This is where you receive all socket messages
 
         socket.on('playerChat', function(data) {
@@ -14,5 +14,5 @@ function ChatServer(){
         });
     };
     
-    return self;
+    return that;
 }

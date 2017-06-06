@@ -13,14 +13,13 @@ c.height = screenHeight;
 var KEY_ENTER = 13;
 
 var game = new Game();
-var chatClient;
+var chatClient= new ChatClient();
 
 function startGame() {
     playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
     document.getElementById('gameAreaWrapper').style.display = 'block';
     document.getElementById('startMenuWrapper').style.display = 'none';
     socket = io();
-    chatClient = new ChatClient(socket);
     SetupSocket(socket);    
     animloop();
     game.SetupInputs(c);
@@ -71,7 +70,8 @@ window.onload = function() {
 };
 
 function SetupSocket(socket) {
-  //game.handleNetwork(socket);
+  chatClient.handleNetwork(socket);
+  game.handleNetwork(socket);
       
   // socket.on('connect',function(){
     // socket.emit('greetings', { sender: playerName });
