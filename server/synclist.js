@@ -3,6 +3,9 @@ module.exports = exports = SyncList;
 function SyncList(listType){ 
     var that = {};
     
+    that.onAdd = [];
+    that.onRemove = [];
+    
     that.enableLog = false;
     that.log = function(content, data)
     {
@@ -47,8 +50,12 @@ function SyncList(listType){
     };
     
     that.push = function(item)
-    {
+    {            
         that.items.push(item);
+        that.onAdd.forEach(function(callback){
+            callback(item);
+        });
+        
         var data = {sender: 'server', item: item};
         that.log('sending synclist_'+that.listType+'_serverAdd', data);
         that.io.emit('synclist_'+that.listType+'_serverAdd', data);     
@@ -66,12 +73,17 @@ function SyncList(listType){
             if(JSON.stringify(that.items[i]) === JSON.stringify(item) )
             {
                 //console.log('           match!');
+                var removed = that.items[i];
                 that.items[i] = null;
+                that.onRemove.forEach(function(callback){
+                    callback(removed);
+                });
                 that.items.splice(i, 1);
                 break;
             }
             //console.log('remove end');
         }
+        
         var data = {sender: 'server', item: item};
         that.log('sending synclist_'+that.listType+'_serverRemove', data);
         that.io.emit('synclist_'+that.listType+'_serverRemove', data);     

@@ -154,11 +154,18 @@ function Game()
       that.syncListPlayers.handleNetwork(socket);
       that.syncListBuildings.handleNetwork(socket);
         
-        that.player = {
-            Name: playerName,
-            Score: 0
-        };
-        that.syncListPlayers.push(that.player);        
+    
+        socket.on("respond_clientId", function(data)
+          {            
+            that.player = {
+                Name: playerName,
+                Score: 0,
+                ClientId: data
+            };
+            that.syncListPlayers.push(that.player);   
+        });
+        socket.emit("request_clientId", {});       
+          
     };
 
     that.handleLogic = function() {
