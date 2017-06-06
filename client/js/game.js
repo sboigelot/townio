@@ -8,6 +8,8 @@ function Game()
     that.syncListPlayers = new SyncListClient('player');
     that.syncListBuildings = new SyncListClient('buildings');
     
+    that.isogrid = new IsoGrid();
+    
     that.syncListTest.onAdd.push(function(item){
         that.spriteRenderer.addSprite(sprite({
             context: canvas,
@@ -137,9 +139,9 @@ function Game()
             var speed = 5;
             
             if (key === KEY_LEFT) 
-                that.cameraCenter.x -= speed;
-            if (key === KEY_RIGTH) 
                 that.cameraCenter.x += speed;
+            if (key === KEY_RIGTH) 
+                that.cameraCenter.x -= speed;
             if (key === KEY_UP) 
                 that.cameraCenter.y += speed;
             if (key === KEY_DOWN) 
@@ -179,6 +181,7 @@ function Game()
       gfx.fillStyle = '#fbfcfc';
       gfx.fillRect(0, 0, screenWidth, screenHeight);
 
+      that.isogrid.render(gfx,that.cameraCenter);
       that.spriteRenderer.render(that.cameraCenter);
     
       that.syncListPlayers.items.forEach(function(player, i){

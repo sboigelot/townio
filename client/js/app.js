@@ -88,6 +88,43 @@ window.requestAnimFrame = (function(){
             };
 })();
 
+var lastCalledTime;
+var fps;
+var showfps = true;
+var avgFps = [];
+
+function calculateFps(gfx) {
+
+  if(!lastCalledTime) {
+     lastCalledTime = Date.now();
+     fps = 0;
+     return;
+  }
+  delta = (Date.now() - lastCalledTime)/1000;
+  lastCalledTime = Date.now();
+  fps = 1/delta;
+    
+  if(showfps)
+  {
+      avgFps.push(fps);
+      while(avgFps.length > 100)
+          avgFps.splice(0,1);
+
+      var sum = 0;
+        for( var i = 0; i < avgFps.length; i++ ){
+            sum += avgFps[i];
+        }
+
+        var avg = sum/avgFps.length;
+      
+      gfx.font = 'bold 16px Verdana';
+      gfx.textAlign = 'Left';
+      gfx.lineWidth = 2;
+      gfx.fillStyle = '#0045ff';
+      gfx.fillText('fps: '+Math.round(avg), 10, 15);
+  }
+} 
+
 function animloop(){
     requestAnimFrame(animloop);
     gameLoop();
@@ -96,6 +133,7 @@ function animloop(){
 function gameLoop() {
   game.handleLogic();
   game.handleGraphics(canvas);
+  calculateFps(canvas);
 }
 
 window.addEventListener('resize', function() {
