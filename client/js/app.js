@@ -7,6 +7,77 @@ var screenHeight = window.innerHeight;
 
 var c = document.getElementById('cvs');
 var canvas = c.getContext('2d');
+
+//ISOMER
+var iso = new Isomer(c);
+var Shape = Isomer.Shape;
+var Point = Isomer.Point;
+
+/* add() also accepts arrays */
+
+function makeGrid(xSize, ySize, zHeight, gridColor) {
+  for (x = 0; x < xSize + 1; x++) {
+    iso.add(new Isomer.Path([
+      new Point(x, 0, zHeight),
+      new Point(x, xSize, zHeight),
+      new Point(x, 0, zHeight)
+    ]), gridColor);
+  }
+  for (y = 0; y < ySize + 1; y++) {
+    iso.add(new Isomer.Path([
+      new Point(0, y, zHeight),
+      new Point(ySize, y, zHeight),
+      new Point(0, y, zHeight)
+    ]), gridColor);
+  }
+}
+
+
+var hoverColor = new Isomer.Color(150, 0, 0, 0.4);
+var red = new Isomer.Color(160, 60, 50);
+var blue = new Isomer.Color(50, 60, 160);
+
+var stage = new createjs.Stage("canvas01");
+    
+//render for hit detection
+iso.add(Shape.Prism(new Point(0, 0, 0)));//
+var dataUrl2 = c.toDataURL();//
+var bitmap2 = new createjs.Bitmap(dataUrl2);//
+bitmap2.name = 'uno';//
+iso.canvas.clear();//
+
+function init() {
+  stage.enableMouseOver(10);
+  stage.addChild(bitmap2);
+  //bitmap2.on("mouseover", handleInteraction);
+  //bitmap2.on("mouseout", handleInteraction);
+  bitmap2.addEventListener("click", function(event) {
+    console.log('clicked Uno');
+  });   
+}
+init();
+
+function drawiso()
+{
+  /*  iso.add([
+      Shape.Prism(Point.ORIGIN, 4, 4, 1),
+      Shape.Prism(new Point(-1, 1, 0), 1, 2, 1),
+      Shape.Prism(new Point(1, -1, 0), 2, 1, 1)
+    ]);*/
+    
+    
+  makeGrid(7, 7, 0, new Isomer.Color(111, 111, 111, 1));
+  iso.add(Shape.Prism(new Point(0, 0, 0)));//
+    
+  /*  var offset = game.cameraCenter;
+    iso.add(Shape.Prism(Point(5 - offset.x/10, 0, -5 + offset.y/10), 3, 3, 1));
+    iso.add(Shape.Pyramid(Point(5 - offset.x/10, 2, -4+ offset.y/10)), red);
+    iso.add(Shape.Prism(Point(7 - offset.x/10, 0, -4+ offset.y/10)), blue);
+    iso.add(Shape.Prism(Point(7.1 - offset.x/10,0.1, -3+ offset.y/10),0.8,0.8,0.8), blue);*/
+}
+          
+//ENDISOMER
+
 c.width = screenWidth; 
 c.height = screenHeight;
 
@@ -133,6 +204,7 @@ function animloop(){
 function gameLoop() {
   game.handleLogic();
   game.handleGraphics(canvas);
+  drawiso();
   calculateFps(canvas);
 }
 

@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
+    "isomer": "^0.2.6",
     "requirejs": "^2.3.3",
     "socket.io": "^2.0.2"
   }

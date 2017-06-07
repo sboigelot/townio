@@ -38,6 +38,8 @@ function IsoGrid()
             { x: x * that.tileSize.x, y: (y+1) * that.tileSize.y}
         ];
         
+        //TODO replace by ctx.rect(20,20,150,100);
+        
         //-
         that.drawLine(corners[0], corners[1], ctx, offset);
         
