@@ -2,6 +2,9 @@ function Game()
 {
     var that = {};
     
+    that.ui = new Canvas();
+    //that.ui.children.push()
+    
     that.spriteRenderer = new spriteRenderer();   
     that.playerName;
     that.syncListTest = new SyncListClient('test');
